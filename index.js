@@ -1,21 +1,34 @@
-const { Player } = require('discord-player');
-const { Client, Intents } = require('discord.js');
+const Discord = require('discord.js');
+const ytdl = require('ytdl-core');
+const ytSearch= require('yt-search');
 
-global.client = new Client({
+const Client = new Discord.Client({
     intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_VOICE_STATES
-    ],
-    disableMentions: 'everyone',
+        Discord.Intents.FLAGS.GUILDS,
+        Discord.Intents.FLAGS.GUILD_MESSAGES,
+    ]});
+
+const prefix = "!";
+
+Client.on("ready", () =>{
+    console.log("Bot Connecté");
 });
 
-client.config = require('./config');
+Client.on("messageCreate", message => {
 
-global.player = new Player(client, client.config.opt.discordPlayer);
+    if(message.author.bot) return;
 
-require('./src/loader');
-require('./src/events');
+    //help
+    if(message.content === prefix + "help") {
+        const embed = new Discord.MessageEmbed()
+            .setColor("#ffffff")
+            .setTitle("Liste des commandes")
+            .setURL("https://www.republiqueforum.fr/forum")
+            .setDescription("Développé par Mooll00w01")
+            .addField("!help", "Affiche la liste la liste des commandes.")
+            .setTimestamp();
+        message.channel.send({ embeds: [embed]});
+    }
 
-client.login(client.config.app.token);
+})
+Client.login();
